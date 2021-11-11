@@ -55,11 +55,13 @@ class User(AbstractUser):
     ]
     phone_nm = models.CharField(max_length=11, unique=True)
     ID = models.CharField(max_length=15, unique=True)
-    PW = models.CharField(max_length=20, null=False)
-    age = models.IntegerField(null=False)
-    gender = models.SmallIntegerField(choices=GENDER_CHOICES, null=False)
+    PW = models.CharField(max_length=20, blank=False)
+    age = models.IntegerField(blank=False)
+    gender = models.SmallIntegerField(choices=GENDER_CHOICES, blank=False)
     REQUIRED_FIELDS = ['ID', 'PW', 'age', 'gender']
     USERNAME_FIELD = 'phone_nm'
+
+
 
     objects = UserManager()
 
@@ -70,7 +72,17 @@ class User(AbstractUser):
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     nickname = models.CharField(max_length=20, null=False)
-    introduction = models.TextField(null=False)
+    introduction = models.TextField(null=False, blank=True)
+    jobs = models.ManyToManyField('Job', blank=True)   # profile_job 테이블 자동 생성
 
 
+    def __str__(self):
+        return f'[{self.pk}] {self.nickname} - {self.user.phone_nm}'
+
+
+class Job(models.Model):
+    job_name = models.CharField(max_length=30, blank=False)
+
+    def __str__(self):
+        return self.job_name
 
