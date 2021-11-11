@@ -74,10 +74,15 @@ class Profile(models.Model):
     nickname = models.CharField(max_length=20, null=False)
     introduction = models.TextField(null=False, blank=True)
     jobs = models.ManyToManyField('Job', blank=True)   # profile_job 테이블 자동 생성
-
+    click_recomms = models.ManyToManyField('self', symmetrical=False, related_name='get_recomms', blank=True)
+    # 본인(hyo)이 추천한 회원들.  hyo.click_recomms.all()
+    # 회원(song)을 추천한 회원들. song.get_recomm.all()
+    # hyo.click_recomms.add(gildong)   hyo가 gildong을 추천
+    # hyo.get_recomms.add(gildong)  gildong 이 hyo를 추천(hyo를 추천한 회원list에 gildong 추가)
 
     def __str__(self):
-        return f'[{self.pk}] {self.nickname} - {self.user.phone_nm}'
+        return f'{self.pk}-{self.nickname}'
+    #-{self.user.phone_nm}  이렇게 phone_nm도 참조 가능 .
 
 
 class Job(models.Model):
