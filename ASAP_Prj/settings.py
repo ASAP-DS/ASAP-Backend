@@ -24,8 +24,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'django-insecure-r0ttv+&o3wo^fgnyde0ls2-1ylr!^n2*xvd%9hjz7uq_^fpmo4')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-#DEBUG = True
-DEBUG = bool(os.environ.get('DJANGO_DEBUG', False))
+DEBUG = True
+#DEBUG = bool(os.environ.get('DJANGO_DEBUG', False))
 
 ALLOWED_HOSTS = ['*',]
 
@@ -45,6 +45,13 @@ INSTALLED_APPS = [
     'search_job',
 
 ]
+
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': [
+       # 'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'    # 이거 뭐였더라?
+        'rest_framework.permissions.IsAuthenticated',
+    ]
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

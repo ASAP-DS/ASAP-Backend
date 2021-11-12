@@ -7,37 +7,37 @@ from django.db import models
 
 
 class UserManager(BaseUserManager):
-    def create_user(self, phone_nm, ID, PW, age, gender, password):
+    def create_user(self, phone_nm, login_ID, login_PW, age, gender, password):
         if not phone_nm:
             raise ValueError('User must have a phone_nm')
-        if not ID:
-            raise ValueError('User must have an ID')
-        if not PW:
-            raise ValueError('User must have a PW')
+        if not login_ID:
+            raise ValueError('User must have an login_ID')
+        if not login_PW:
+            raise ValueError('User must have a login_PW')
         if not age:
             raise ValueError('User must have an age')
         if not password:
             raise ValueError('User must have a password')
         # phone_nm = self.phone_nm(phone_nm)
-        user = self.model(phone_nm=phone_nm, ID=ID, PW=PW, age=age, gender=gender)
+        user = self.model(phone_nm=phone_nm, login_ID=ID, login_PW=PW, age=age, gender=gender)
         user.set_password(password)
         user.is_superuser = False
         user.is_staff = False
         user.save(using=self._db)
         return user
 
-    def create_superuser(self, phone_nm, ID, PW, age, gender, password):
+    def create_superuser(self, phone_nm, login_ID, login_PW, age, gender, password):
         if not phone_nm:
             raise ValueError('User must have a phone_nm')
-        if not ID:
-            raise ValueError('User must have an ID')
-        if not PW:
-            raise ValueError('User must have a PW')
+        if not login_ID:
+            raise ValueError('User must have an login_ID')
+        if not login_PW:
+            raise ValueError('User must have a login_PW')
         if not age:
             raise ValueError('User must have an age')
         if not password:
             raise ValueError('User must have a password')
-        user = self.create_user(phone_nm, ID, PW, age, gender, password)
+        user = self.create_user(phone_nm, login_ID, login_PW, age, gender, password)
         user.is_superuser = True
         user.is_staff = True
         user.save(using=self._db)
@@ -54,14 +54,12 @@ class User(AbstractUser):
         (1, 'Male'),
     ]
     phone_nm = models.CharField(max_length=11, unique=True)
-    ID = models.CharField(max_length=15, unique=True)
-    PW = models.CharField(max_length=20, blank=False)
+    login_ID = models.CharField(max_length=15, unique=True)
+    login_PW = models.CharField(max_length=20, blank=False)
     age = models.IntegerField(blank=False)
     gender = models.SmallIntegerField(choices=GENDER_CHOICES, blank=False)
-    REQUIRED_FIELDS = ['ID', 'PW', 'age', 'gender']
+    REQUIRED_FIELDS = ['login_ID', 'login_PW', 'age', 'gender']
     USERNAME_FIELD = 'phone_nm'
-
-
 
     objects = UserManager()
 
