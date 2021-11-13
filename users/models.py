@@ -7,7 +7,7 @@ from django.db import models
 class Job(models.Model):
     job_name = models.CharField(max_length=30, blank=False)
     def __str__(self):
-        return self.job_name
+        return f'{self.pk} {self.job_name}'
 
 
 class UserManager(BaseUserManager):
@@ -77,7 +77,7 @@ class Profile(models.Model):
                                 primary_key=True)
     nickname = models.CharField(max_length=20, null=False)
     introduction = models.TextField(null=False, blank=True)
-    jobs = models.ManyToManyField('Job', null=True, blank=True, default=None)   # profile_job 테이블 자동 생성
+    jobs = models.ManyToManyField('Job', null=True, blank=True, default=None, related_name='jobs')   # profile_job 테이블 자동 생성
     click_recomms = models.ManyToManyField('self', symmetrical=False, related_name='get_recomms', blank=True,null=True)
     # 본인(hyo)이 추천한 회원들.  hyo.click_recomms.all()
     # 회원(song)을 추천한 회원들. song.get_recomm.all()
@@ -92,8 +92,9 @@ class Profile(models.Model):
     #-{self.user.phone_nm}  이렇게 phone_nm도 참조 가능 .
 
     def get_jobs(self):
-        return self.jobs.values('id','job_name')  # pk값들만 return해야하는데..
+        return self.jobs.all().values('id','job_name')  # pk값들만 return해야하는데..
         #return Job.objects.get(id=self.jobs.all())
-
+    # def _get_pk_val(self, meta=None):
+    #     return self.jobs.all().values('pk')
 
 

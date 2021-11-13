@@ -22,6 +22,8 @@ class UserSerializer(serializers.ModelSerializer):
 class ProfileSerializer(serializers.ModelSerializer):
     related_user = UserSerializer(read_only=True)  # read_only=True 이거 안했더니 오류났음..뭐였더라. explicit .. .create() 어쩌고
     jobs = JobSerializer(source='get_jobs', required=False, many=True, allow_null=True)
+    #jobs = JobSerializer(source='_get_pk_val', required=False, many=True, allow_null=True)
+    #jobs = JobSerializer(required=False, many=True, allow_null=True)
     # def to_internal_value(self, data):
     #     # related_user_pk = data.get('related_user')
     #     related_user = data.get('related_user')
@@ -52,23 +54,44 @@ class ProfileSerializer(serializers.ModelSerializer):
     #     self.fields['nickname', 'introduction',  'related_user'].
 
     def create(self, validated_data):
-        #request = self.context.get('request')
         related_user_data = validated_data.pop('related_user')
         related_user = User.objects.create(**related_user_data)
         jobs_data = validated_data.pop('jobs')
-        jobs = Job.objects.create(**jobs_data)
-        #related_user = UserSerializer.create(UserSerializer(), validated_data=related_user_data)
-        #profile = Profile.objects.create(**validated_data)
-        #related_user = User.objects.create(**related_user_data)
-       # p_items = validated_data
-       #  jobs = self.initial_data.get("jobs",[]) # list
-       #  validated_data = list(zip(validated_data.keys(), validated_data.values())) #dict->list
-       #  validated_data = validated_data + jobs
-       #  validated_data = dict(validated_data)
-        #validated_data #dict
-        profile = Profile.objects.create(**validated_data, jobss=jobs, related_user=related_user)
+
+        profile = Profile.objects.create(**validated_data, related_user=related_user)
+        for job_data in jobs_data:
+            job, is_job_created = Job.objects.get_or_create(jobs_data)
+            if is_job_created:
+                job.save()
+            profile.jobs.add(job_data)
         return profile
-        # profile, created = Profile.objects.update_or_create(related_user=related_user,
+
+
+        # related_user_data = validated_data.pop('related_user')
+        # related_user = User.objects.create(**related_user_data)
+        # jobs_data = validated_data.pop('jobs')
+        # jobs = Job.objects.create(jobs_data)
+        # profile = Profile.objects.create(**validated_data, jobs=jobs, related_user=related_user)
+        # return profile
+
+
+       #  #request = self.context.get('request')
+       #  related_user_data = validated_data.pop('related_user')
+       #  related_user = User.objects.create(**related_user_data)
+       #  jobs_data = validated_data.pop('jobs')
+       #  jobs = Job.objects.create(jobs_data)
+       #  #related_user = UserSerializer.create(UserSerializer(), validated_data=related_user_data)
+       #  #profile = Profile.objects.create(**validated_data)
+       #  #related_user = User.objects.create(**related_user_data)
+       # # p_items = validated_data
+       # #  jobs = self.initial_data.get("jobs",[]) # list
+       # #  validated_data = list(zip(validated_data.keys(), validated_data.values())) #dict->list
+       # #  validated_data = validated_data + jobs
+       # #  validated_data = dict(validated_data)
+       #  #validated_data #dict
+       #  profile = Profile.objects.create(**validated_data, jobs=jobs, related_user=related_user)
+       #  return profile
+       #  # profile, created = Profile.objects.update_or_create(related_user=related_user,
         #                                                     nickname=validated_data.pop('nickname'),
         #                                                     introduction=validated_data.pop('introduction')
         #                                                     )
