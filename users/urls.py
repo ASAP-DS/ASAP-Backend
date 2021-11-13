@@ -9,7 +9,7 @@ from .views import ProfileList
 #router 다시 공부하기 (나중에 바꿔보자)
 
 urlpatterns = [
-
+    path('recomms/',views.recomm),
    path('profiles/', views.ProfileList.as_view()),
    path('profiles/<int:pk>', views.ProfileDetail.as_view()),
   # path('join/',views),

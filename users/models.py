@@ -78,16 +78,23 @@ class Profile(models.Model):
     nickname = models.CharField(max_length=20, null=False)
     introduction = models.TextField(null=False, blank=True)
     jobs = models.ManyToManyField('Job', null=True, blank=True, default=None, related_name='jobs')   # profile_job 테이블 자동 생성
-    click_recomms = models.ManyToManyField('self', symmetrical=False, related_name='get_recomms', blank=True,null=True)
+    click_recomms = models.ManyToManyField('self', symmetrical=False,
+                                           related_name='get_recomms', blank=True,null=True)
     # 본인(hyo)이 추천한 회원들.  hyo.click_recomms.all()
     # 회원(song)을 추천한 회원들. song.get_recomm.all()
     # hyo.click_recomms.add(gildong)   hyo가 gildong을 추천
     # hyo.get_recomms.add(gildong)  gildong 이 hyo를 추천(hyo를 추천한 회원list에 gildong 추가)
 
-    #recomms_cnt = self.get_recomms.all().count()  # 그냥 view에서변수에넣어서보내주자 그럼 serializer field도? 아님 걍 relation 하나마만들어야되나나
 
     def recomms_cnt(self):
         return self.get_recomms.all().count()
+
+
+    def already_clicked(self, to_prof): # self가 to_prof(id값?)를 이미 추천 줬으면 True . 안줬으면 False (view에서 pro.already_clicked == True면 raise이미했어. False면 recomm에추가(add)
+        if to_prof in self.click_recomms.all().values_list('pk', flat=True):
+            return True
+        else:
+            return False
 
 
    # def increase_cnt(self):
@@ -102,5 +109,4 @@ class Profile(models.Model):
         #return Job.objects.get(id=self.jobs.all())
     # def _get_pk_val(self, meta=None):
     #     return self.jobs.all().values('pk')
-
 
