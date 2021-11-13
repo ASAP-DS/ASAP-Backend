@@ -1,16 +1,22 @@
+import json
 from django.shortcuts import render
 
 # Create your views here.
 from django.http import Http404
+from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.status import HTTP_201_CREATED, HTTP_400_BAD_REQUEST
+
 from rest_framework.views import APIView
 
 from users.models import User, Profile
 from users.serializers import ProfileSerializer
+
+
 # , ProfileDetailSerializer
+
 
 def main(request):
     return render(
@@ -19,27 +25,46 @@ def main(request):
     )
 
 
-class ProfileList(APIView):
+#
 
+class ProfileList(APIView):
+    # 회원 조회
     def get(self, request):
         # 모든 profile 불러옴. ORM은 .all() 사용
         profiles = Profile.objects.all()
         serializer = ProfileSerializer(profiles, many=True)
         return Response(serializer.data)
 
-    # @classmethod
-    # def get_extra_actions(cls):
-    #     return[]
+#valiated_data 는 dic이랬어.
+
+    def post(self, request):
+        serializer = ProfileSerializer(data=request.data)
+        print(serializer) # python딕셔너리 맞지?
+        if serializer.is_valid(raise_exception=ValueError):
+            serializer.create(validated_data=request.data)
+            return Response(serializer.data, status.HTTP_201_CREATED)
+        return Response(serializer.error_messages,
+                        status=status.HTTP_400_BAD_REQUEST)
+            # serializer = json.dumps(serializer)
+            # profile = serializer.create(serializer)
+            # profile = json.loads(profile)
+            #return Response(profile, status=status.HTTP_201_CREATED)
+        #return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+
+    # # 회원가입
+    # @method_decorator(csrf_exempt)
     # def post(self, request):
-    #     serializer = ProfileSerializer(data = request.data)
+    #     serializer = ProfileSerializer(data=request.data)
     #     if serializer.is_valid():
     #         serializer.save()
-    #         return Response(serializer.data, status=HTTP_201_CREATED)
-    #     return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
+    #         return Response(serializer.data, status=status.HTTP_201_CREATED)
+    #     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-#@csrf_exempt
+
+#
+#@csrf_exempt  #모야이건...했더니 계속 function object has no attribute 'as_view'에러
 class ProfileDetail(APIView):
     def get_object(self, pk):
         try:
@@ -51,7 +76,5 @@ class ProfileDetail(APIView):
 
     def get(self, request, pk):
         profile = self.get_object(pk)
-        #serializer = ProfileDetailSerializer(profile)
         serializer = ProfileSerializer(profile)
         return Response(serializer.data)
-

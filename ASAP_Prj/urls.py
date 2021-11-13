@@ -30,7 +30,6 @@ urlpatterns = [
     path('users/', include('users.urls')),
     path('api-auth', include('rest_framework.urls')),
     path('admin/', admin.site.urls),
-    # path('users/', include('users.urls')),
     # path('get_staff', include('get_staff.urls')),
     # path('search_job', include('search_job.urls')),
 

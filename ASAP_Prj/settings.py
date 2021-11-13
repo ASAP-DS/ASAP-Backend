@@ -12,23 +12,22 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 
 from pathlib import Path
 import os
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-#SECRET_KEY = 'django-insecure-r0ttv+&o3wo^fgnyde0ls2-1ylr!^n2*xvd%9hjz7uq_^fpmo4'
+# SECRET_KEY = 'django-insecure-r0ttv+&o3wo^fgnyde0ls2-1ylr!^n2*xvd%9hjz7uq_^fpmo4'
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'django-insecure-r0ttv+&o3wo^fgnyde0ls2-1ylr!^n2*xvd%9hjz7uq_^fpmo4')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-#DEBUG = bool(os.environ.get('DJANGO_DEBUG', False))
+# DEBUG = bool(os.environ.get('DJANGO_DEBUG', False))
 
-ALLOWED_HOSTS = ['*',]
-
+ALLOWED_HOSTS = ['*', ]
 
 # Application definition
 
@@ -48,8 +47,8 @@ INSTALLED_APPS = [
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
-       # 'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'    # 이거 뭐였더라?
-        'rest_framework.permissions.IsAuthenticated',
+        # 'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'    # 이거 뭐였더라?
+        'rest_framework.permissions.IsAuthenticated'
     ]
 }
 
@@ -84,7 +83,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'ASAP_Prj.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
@@ -92,13 +90,12 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'asap_ds',
-        'USER' : 'hyo',
-        'PASSWORD' : 'Qkrgydnjs99',
-        'HOST' : '20.196.227.198',
-        'PORT' : '5432',
+        'USER': 'hyo',
+        'PASSWORD': 'Qkrgydnjs99',
+        'HOST': '20.196.227.198',
+        'PORT': '5432',
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
@@ -118,7 +115,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
 
@@ -132,14 +128,12 @@ USE_L10N = True
 
 USE_TZ = False
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
 
 # STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-
 
 STATIC_URL = '/static/'
 # #STATIC_DIRS = [
@@ -148,6 +142,15 @@ STATIC_URL = '/static/'
 
 AUTH_USER_MODEL = 'users.User'
 
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
+)
+ACCOUNT_AUTHENTICATION_METHOD = 'phone_nm'
+ACCOUNT_USERNAME_REQUIRED = False
+ACCOUNT_EMAIL_REQUIRED = False
+ACCOUNT_PHONE_NM_VERIFICATION = 'none'
+ACCOUNT_USER_MODEL_USERNAME_FIELD = None
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
