@@ -48,7 +48,7 @@ INSTALLED_APPS = [
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
         # 'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'    # 이거 뭐였더라?
-        'rest_framework.permissions.IsAuthenticated'
+        #'rest_framework.permissions.IsAuthenticated' #인증된사용자만 접근 가능. 없애니까 admin login안해도 되네..?!
     ]
 }
 
