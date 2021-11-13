@@ -144,7 +144,7 @@ AUTH_USER_MODEL = 'users.User'
 
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
-    'allauth.account.auth_backends.AuthenticationBackend',
+  #  'allauth.account.auth_backends.AuthenticationBackend',
 )
 ACCOUNT_AUTHENTICATION_METHOD = 'phone_nm'
 ACCOUNT_USERNAME_REQUIRED = False
