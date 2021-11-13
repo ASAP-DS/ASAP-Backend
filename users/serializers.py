@@ -23,7 +23,14 @@ class ProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Profile
-        fields = ['related_user_id','nickname', 'introduction', 'jobs', 'click_recomms', 'related_user']
+        fields = ['related_user_id','nickname', 'introduction', 'jobs', 'recomms_cnt', 'related_user']
 
-#
-# class JoinSerializer(serializers.ModelSerializer):
+
+# 회원가입
+# 회원가입 시 보낼 정보 -> id, pw, name, age, gender, phone_nm, nickname, introduction
+class JoinSerializer(serializers.ModelSerializer):
+    related_user = UserSerializer(read_only=True)
+
+    class Meta:
+        model = Profile
+        fields = ['related_user', 'nickname', 'introduction']

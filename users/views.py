@@ -47,4 +47,4 @@ class ProfileDetail(APIView):
         return Response(serializer.data)
 
 # class Join(APIView):
-#
+#     def post(self, request):

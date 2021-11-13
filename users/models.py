@@ -84,9 +84,15 @@ class Profile(models.Model):
     # hyo.click_recomms.add(gildong)   hyo가 gildong을 추천
     # hyo.get_recomms.add(gildong)  gildong 이 hyo를 추천(hyo를 추천한 회원list에 gildong 추가)
 
-    # def save(self,  *args, **kwargs):
-    #
-    #     super(Profile, self).save(*args, **kwargs)  # Call teh 'real save() method
+    #recomms_cnt = self.get_recomms.all().count()  # 그냥 view에서변수에넣어서보내주자 그럼 serializer field도? 아님 걍 relation 하나마만들어야되나나
+
+    def recomms_cnt(self):
+        return self.get_recomms.all().count()
+
+
+   # def increase_cnt(self):
+    #     self.recomms_cnt = self.recomms_cnt + 1     # 이걸왜하지,,,? 추천 누르면 그냥 add하면 되고 추천수는 다시 조회하면 증가되있읉텐데..
+
     def __str__(self):
         return f'{self.pk}-{self.nickname}'
     #-{self.user.phone_nm}  이렇게 phone_nm도 참조 가능 .
