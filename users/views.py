@@ -15,17 +15,12 @@ from users.models import User, Profile
 from users.serializers import ProfileSerializer
 
 
-# , ProfileDetailSerializer
-
-
 def main(request):
     return render(
         request,
         'users/main.html',
     )
 
-
-#
 
 class ProfileList(APIView):
     # 회원 조회
@@ -35,35 +30,7 @@ class ProfileList(APIView):
         serializer = ProfileSerializer(profiles, many=True)
         return Response(serializer.data)
 
-#valiated_data 는 dic이랬어.
 
-    def post(self, request):
-        serializer = ProfileSerializer(data=request.data)
-        print(serializer) # python딕셔너리 맞지?
-        if serializer.is_valid(raise_exception=ValueError):
-            serializer.create(validated_data=request.data)
-            return Response(serializer.data, status.HTTP_201_CREATED)
-        return Response(serializer.error_messages,
-                        status=status.HTTP_400_BAD_REQUEST)
-            # serializer = json.dumps(serializer)
-            # profile = serializer.create(serializer)
-            # profile = json.loads(profile)
-            #return Response(profile, status=status.HTTP_201_CREATED)
-        #return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-
-    # # 회원가입
-    # @method_decorator(csrf_exempt)
-    # def post(self, request):
-    #     serializer = ProfileSerializer(data=request.data)
-    #     if serializer.is_valid():
-    #         serializer.save()
-    #         return Response(serializer.data, status=status.HTTP_201_CREATED)
-    #     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-#
 #@csrf_exempt  #모야이건...했더니 계속 function object has no attribute 'as_view'에러
 class ProfileDetail(APIView):
     def get_object(self, pk):
@@ -78,3 +45,6 @@ class ProfileDetail(APIView):
         profile = self.get_object(pk)
         serializer = ProfileSerializer(profile)
         return Response(serializer.data)
+
+# class Join(APIView):
+#
