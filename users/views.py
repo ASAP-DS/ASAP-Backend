@@ -2,18 +2,19 @@ import json
 from django.shortcuts import render
 
 # Create your views here.
-from django.http import Http404
+from django.http import Http404, HttpResponse
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework import status
 from rest_framework.decorators import api_view
+from rest_framework.parsers import JSONParser
 from rest_framework.response import Response
 from rest_framework.status import HTTP_201_CREATED, HTTP_400_BAD_REQUEST
 
 from rest_framework.views import APIView
 
 from users.models import User, Profile, Job
-from users.serializers import ProfileSerializer, RecommSerializer, JobSerializer, JobsSetSerializer
+from users.serializers import ProfileSerializer, RecommSerializer, JobSerializer, JobsSetSerializer, LoginSerializer
 
 
 def main(request):
@@ -35,10 +36,10 @@ class ProfileList(APIView):
     @csrf_exempt
     def post(self, request):
         data = request.data
-        #serializer = ProfileSerializer(data=request.data, partial=True)
-        serializer = ProfileSerializer(data=data,partial=True)
-       # jobs = serializer.data['jobs']  # list 형태?
-       # recomms = serializer.data['recomms'] # list형태?
+        # serializer = ProfileSerializer(data=request.data, partial=True)
+        serializer = ProfileSerializer(data=data, partial=True)
+        # jobs = serializer.data['jobs']  # list 형태?
+        # recomms = serializer.data['recomms'] # list형태?
         if serializer.is_valid(raise_exception=ValueError):
             serializer.validate(data)
             serializer.create(validated_data=request.data)
@@ -82,9 +83,10 @@ def recomm(request):
     if request.method == 'POST':
         serializer = RecommSerializer(data=request.data)
         if serializer.is_valid():
-           # from_prof_id = serializer.data['related_user_id']  # 여기서 KeyError..
+            # from_prof_id = serializer.data['related_user_id']  # 여기서 KeyError..
             to_prof_id = serializer.data['to_prof_id']
-            p1 = Profile.objects.get(related_user_id=serializer.data['related_user_id'])  # Profile matching query does not exist.
+            p1 = Profile.objects.get(
+                related_user_id=serializer.data['related_user_id'])  # Profile matching query does not exist.
             p2 = Profile.objects.get(related_user_id=to_prof_id)
             if p1.already_clicked(to_prof_id):
                 return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -99,6 +101,7 @@ def recomm(request):
         # if serializer.is_valid():
         return Response(status=status.HTTP_200_OK)
 
+
 # 그냥 serializer안쓰면 안되나..?
 
 @api_view(['PUT', 'GET'])
@@ -110,18 +113,57 @@ def job(request):
             related_user_id = serializer.data['related_user_id']
             profile = Profile.objects.get(pk=related_user_id)
             # jobs_now_list = profile.jobs.all().values_list('id', flat=True)
-            profile.jobs.clear() # 지금 회원 jobs다 지우기.. (이게맞을까..?)
+            profile.jobs.clear()  # 지금 회원 jobs다 지우기.. (이게맞을까..?)
             for job_id in jobs_list:  # 받아온 job id 리스트 순회
                 # 현재 회원의 jobs에 없을 때 (추가해주기)  # 이제 지웠으니까 당연히 없음
-                #if job_id not in jobs_now_list:
+                # if job_id not in jobs_now_list:
                 profile.jobs.add(Job.objects.get(pk=job_id))
             return Response(status=status.HTTP_200_OK)
         else:
             return Response(serializer.errors, status=status.HTTP_406_NOT_ACCEPTABLE)
 
-    else: # GET
+    else:  # GET
         return Response(status=status.HTTP_200_OK)
 
 
+@api_view(['POST', 'GET'])
+def login(request):
+    if request.method == "POST":
+        serializer = LoginSerializer(data=request.data)
+        if serializer.is_valid():
+            login_ID = serializer.data['login_ID']
+            login_PW = serializer.data['login_PW']
+            if login_ID in User.objects.all().values_list('login_ID', flat=True):
+                user = User.objects.get(login_ID=login_ID)
+                user_id = user.pk
+                if user.login_PW == login_PW:  # 패스워드 확인
+                    return Response(user_id, status=status.HTTP_200_OK)  # 로그인 성공
+                else:
+                    return HttpResponse(status=401)  # # 패스워드 불일치
 
-# 그 열 조회.. django 쿼리 열만 조회
+            else:  # id 존재 X
+                return HttpResponse(status=400)
+        else:
+            return Response(serializer.errors, status=status.HTTP_406_NOT_ACCEPTABLE)
+
+    else: # 'get'
+        return Response(status=status.HTTP_200_OK)
+
+        # @csrf_exempt
+# def login(request):
+#     if request.method == "POST":
+#         data = JSONParser().parse(request)
+#         login_id = data['login_id']
+#         login_pw = data['login_pw']
+#         if login_id in User.objects.all().values_list('login_ID', flat=True):
+#             user = User.objects.get(login_ID=login_id)
+#             user_id = user.pk
+#             if user.login_PW == login_pw: # 패스워드 확인
+#                 return Response(user_id, status=status.HTTP_200_OK) #로그인 성공
+#             else:
+#                 return HttpResponse(status=401) # # 패스워드 불일치
+#
+#         else: # id 존재 X
+#             return HttpResponse(status=400)
+#     else: #'GET'
+#         return HttpResponse(status=200)

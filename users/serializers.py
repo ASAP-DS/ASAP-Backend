@@ -5,6 +5,11 @@ from rest_framework.exceptions import ValidationError
 
 from users.models import User, Profile, Job
 
+class LoginSerializer(serializers.Serializer):
+    login_ID = serializers.CharField(max_length=20, style={'input_type':'login_ID'})
+    login_PW = serializers.CharField(max_length=20, style={'input_type':'login_PW'})
+
+
 
 class JobsSetSerializer(serializers.Serializer):
     # 기존의 job도 새로운 job도 다 보내줘 (원래있던 job안쓰면 삭제되는거!....음....
