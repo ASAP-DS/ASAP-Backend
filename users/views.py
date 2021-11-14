@@ -31,6 +31,20 @@ class ProfileList(APIView):
         serializer = ProfileSerializer(profiles, many=True)
         return Response(serializer.data)
 
+    # 회원 가입
+    @csrf_exempt
+    def post(self, request):
+        data = request.data
+        #serializer = ProfileSerializer(data=request.data, partial=True)
+        serializer = ProfileSerializer(data=data,partial=True)
+       # jobs = serializer.data['jobs']  # list 형태?
+       # recomms = serializer.data['recomms'] # list형태?
+        if serializer.is_valid(raise_exception=ValueError):
+            serializer.validate(data)
+            serializer.create(validated_data=request.data)
+            return Response(serializer.data, status.HTTP_201_CREATED)
+        return Response(serializer.error_messages, status=status.HTTP_400_BAD_REQUEST)
+
 
 # @csrf_exempt  #모야이건...했더니 계속 function object has no attribute 'as_view'에러
 class ProfileDetail(APIView):

@@ -77,7 +77,7 @@ class Profile(models.Model):
                                 primary_key=True)
     nickname = models.CharField(max_length=20, null=False)
     introduction = models.TextField(null=False, blank=True)
-    jobs = models.ManyToManyField('Job', null=True, blank=True, default=None, related_name='jobs')   # profile_job 테이블 자동 생성
+    jobs = models.ManyToManyField('Job', null=True, blank=True, default=None, related_name='jobs_set')   # profile_job 테이블 자동 생성
     click_recomms = models.ManyToManyField('self', symmetrical=False,
                                            related_name='get_recomms', blank=True,null=True)
     # 본인(hyo)이 추천한 회원들.  hyo.click_recomms.all()
@@ -109,4 +109,15 @@ class Profile(models.Model):
         #return Job.objects.get(id=self.jobs.all())
     # def _get_pk_val(self, meta=None):
     #     return self.jobs.all().values('pk')
+
+
+    # User 모델 필드 : login_ID, login_PW, age, gender, phone_nm,
+    # Profile 모델 필드 : nickname, introduction   , jobs, click_recomms
+    # jobs랑 click_recomms는 __init__으로 초기화해주기
+    # def __init__(self):
+    #     basic = Job.objects.get(pk=22)
+    #     self.jobs.add(basic)
+    #     #recomm_self = self
+    #     self.click_recomms.add(self)
+    #     super.__init__()
 
