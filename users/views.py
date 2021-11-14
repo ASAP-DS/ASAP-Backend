@@ -12,8 +12,8 @@ from rest_framework.status import HTTP_201_CREATED, HTTP_400_BAD_REQUEST
 
 from rest_framework.views import APIView
 
-from users.models import User, Profile
-from users.serializers import ProfileSerializer, RecommSerializer
+from users.models import User, Profile, Job
+from users.serializers import ProfileSerializer, RecommSerializer, JobSerializer, JobsSetSerializer
 
 
 def main(request):
@@ -61,6 +61,15 @@ class ProfileDetail(APIView):
         serializer = ProfileSerializer(profile)
         return Response(serializer.data)
 
+    # 회원 정보 수정
+    def put(self, request, pk):
+        profile = self.get_object(pk)
+        serializer = ProfileSerializer(profile, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 # class Join(APIView):
 #     def post(self, request):  #근데 굳이 이렇게 말고..def join
@@ -91,3 +100,28 @@ def recomm(request):
         return Response(status=status.HTTP_200_OK)
 
 # 그냥 serializer안쓰면 안되나..?
+
+@api_view(['PUT', 'GET'])
+def job(request):
+    if request.method == 'PUT':
+        serializer = JobsSetSerializer(data=request.data)
+        if serializer.is_valid():
+            jobs_list = serializer.data['jobs_list']
+            related_user_id = serializer.data['related_user_id']
+            profile = Profile.objects.get(pk=related_user_id)
+            # jobs_now_list = profile.jobs.all().values_list('id', flat=True)
+            profile.jobs.clear() # 지금 회원 jobs다 지우기.. (이게맞을까..?)
+            for job_id in jobs_list:  # 받아온 job id 리스트 순회
+                # 현재 회원의 jobs에 없을 때 (추가해주기)  # 이제 지웠으니까 당연히 없음
+                #if job_id not in jobs_now_list:
+                profile.jobs.add(Job.objects.get(pk=job_id))
+            return Response(status=status.HTTP_200_OK)
+        else:
+            return Response(serializer.errors, status=status.HTTP_406_NOT_ACCEPTABLE)
+
+    else: # GET
+        return Response(status=status.HTTP_200_OK)
+
+
+
+# 그 열 조회.. django 쿼리 열만 조회
