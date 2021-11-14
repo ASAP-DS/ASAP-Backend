@@ -149,21 +149,10 @@ def login(request):
     else: # 'get'
         return Response(status=status.HTTP_200_OK)
 
-        # @csrf_exempt
-# def login(request):
-#     if request.method == "POST":
-#         data = JSONParser().parse(request)
-#         login_id = data['login_id']
-#         login_pw = data['login_pw']
-#         if login_id in User.objects.all().values_list('login_ID', flat=True):
-#             user = User.objects.get(login_ID=login_id)
-#             user_id = user.pk
-#             if user.login_PW == login_pw: # 패스워드 확인
-#                 return Response(user_id, status=status.HTTP_200_OK) #로그인 성공
-#             else:
-#                 return HttpResponse(status=401) # # 패스워드 불일치
-#
-#         else: # id 존재 X
-#             return HttpResponse(status=400)
-#     else: #'GET'
-#         return HttpResponse(status=200)
+
+class JobList(APIView):
+    # 모든 직종 조회
+    def get(self, request):
+        jobs = Job.objects.all()
+        serializer = JobSerializer(jobs, many=True)
+        return Response(serializer.data)

@@ -14,6 +14,7 @@ urlpatterns = [
     path('recomms/',views.recomm),
    path('profiles/', views.ProfileList.as_view()),
    path('profiles/<int:pk>', views.ProfileDetail.as_view()),
+    path('alljobs/', views.JobList.as_view()),
   # path('join/',views),
 
     ]

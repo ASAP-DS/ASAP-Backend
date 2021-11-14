@@ -20,7 +20,7 @@ class JobsSetSerializer(serializers.Serializer):
     related_user_id = serializers.IntegerField(style={'input_type': 'related_user_id'})
 
 
-class JobSerializer(serializers.ModelSerializer):  # ProfileSerializer의 nested_field로 사용
+class JobSerializer(serializers.ModelSerializer):  # ProfileSerializer의 nested_field로 사용  + 모든 직종 조회 view에서 사용
     class Meta:
         model = Job
         fields = ['id', 'job_name']
