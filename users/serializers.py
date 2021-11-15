@@ -47,7 +47,7 @@ class ProfileSerializer(serializers.ModelSerializer):
         related_user_data = validated_data.pop('related_user')
         related_user = User.objects.create(**related_user_data)
         jobs_data = validated_data.pop('jobs')
-        job_dic = {'job_name': j.job_name}
+        #job_dic = {'job_name': j.job_name}
         profile = Profile.objects.create(**validated_data,
                                          related_user=related_user)  # Direct assignment to the forward side of a many-to-many set is prohibited. Use jobs.set() instead.
         profile.jobs.add(Job.objects.get(pk=23))

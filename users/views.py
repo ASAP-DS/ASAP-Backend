@@ -136,8 +136,14 @@ def login(request):
             if login_ID in User.objects.all().values_list('login_ID', flat=True):
                 user = User.objects.get(login_ID=login_ID)
                 user_id = user.pk
+                nickname = Profile.objects.filter(related_user=user).values_list('nickname', flat=True)
+                data = {
+                    "user_id" : user_id,
+                    "login_ID" : login_ID,
+                    "nickname" :nickname
+                }
                 if user.login_PW == login_PW:  # 패스워드 확인
-                    return Response(user_id, status=status.HTTP_200_OK)  # 로그인 성공
+                    return Response(data,status=status.HTTP_200_OK)  # 로그인 성공
                 else:
                     return HttpResponse(status=401)  # # 패스워드 불일치
 
