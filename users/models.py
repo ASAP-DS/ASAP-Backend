@@ -79,7 +79,7 @@ class Profile(models.Model):
     introduction = models.TextField(null=False, blank=True)
     jobs = models.ManyToManyField('Job', null=True, blank=True, default=None, related_name='jobs_set')   # profile_job 테이블 자동 생성
     click_recomms = models.ManyToManyField('self', symmetrical=False,
-                                           related_name='get_recomms', blank=True,null=True)
+                                           related_name='get_recomms', blank=True)
     # 본인(hyo)이 추천한 회원들.  hyo.click_recomms.all()
     # 회원(song)을 추천한 회원들. song.get_recomm.all()
     # hyo.click_recomms.add(gildong)   hyo가 gildong을 추천

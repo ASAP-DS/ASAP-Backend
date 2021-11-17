@@ -24,6 +24,13 @@ def main(request):
     )
 
 
+class JobList(APIView):
+    def get(self):
+        jobs = Job.objects.all()
+        serializer = JobSerializer(jobs, many=True)
+        return Response(serializer.data)
+
+
 class ProfileList(APIView):
     # 회원 조회
     def get(self, request):
@@ -36,7 +43,6 @@ class ProfileList(APIView):
     @csrf_exempt
     def post(self, request):
         data = request.data
-        # serializer = ProfileSerializer(data=request.data, partial=True)
         serializer = ProfileSerializer(data=data, partial=True)
         # jobs = serializer.data['jobs']  # list 형태?
         # recomms = serializer.data['recomms'] # list형태?

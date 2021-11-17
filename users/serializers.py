@@ -5,10 +5,10 @@ from rest_framework.exceptions import ValidationError
 
 from users.models import User, Profile, Job
 
-class LoginSerializer(serializers.Serializer):
-    login_ID = serializers.CharField(max_length=20, style={'input_type':'login_ID'})
-    login_PW = serializers.CharField(max_length=20, style={'input_type':'login_PW'})
 
+class LoginSerializer(serializers.Serializer):
+    login_ID = serializers.CharField(max_length=20, style={'input_type': 'login_ID'})
+    login_PW = serializers.CharField(max_length=20, style={'input_type': 'login_PW'})
 
 
 class JobsSetSerializer(serializers.Serializer):
@@ -33,11 +33,8 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class ProfileSerializer(serializers.ModelSerializer):
-    related_user = UserSerializer(read_only=True)  # read_only=True 이거 안했더니 오류났음..뭐였더라. explicit .. .create() 어쩌고
-    # jobs = JobSerializer(source='get_jobs', required=False, many=True, allow_null=True)
+    related_user = UserSerializer(read_only=True)
     jobs = JobSerializer(required=False, many=True, allow_null=True, read_only=True)
-
-    # jobs = Job.objects.get(pk=22)
 
     class Meta:
         model = Profile
@@ -47,7 +44,7 @@ class ProfileSerializer(serializers.ModelSerializer):
         related_user_data = validated_data.pop('related_user')
         related_user = User.objects.create(**related_user_data)
         jobs_data = validated_data.pop('jobs')
-        #job_dic = {'job_name': j.job_name}
+        # job_dic = {'job_name': j.job_name}
         profile = Profile.objects.create(**validated_data,
                                          related_user=related_user)  # Direct assignment to the forward side of a many-to-many set is prohibited. Use jobs.set() instead.
         profile.jobs.add(Job.objects.get(pk=23))
@@ -60,8 +57,7 @@ class ProfileSerializer(serializers.ModelSerializer):
 
     def validate(self, data):  # data 는 APIView의 request.data  , jobs필드는 받지 않고 create하고 싶어서
         if data.get('jobs', None) is None:
-            j = Job.objects.get(pk=23)
-
+            j = Job.objects.get(pk=23)  # 없어도됨 view에 validate사용한거 수정 귀찮아서 냅둔거ㅓ..
         # aa = str(a)
         # data.get['jobs'] == a # 'builtin_function_or_method' object is not subscriptable
         # data.get['jobs'] += {"id":a, "job_name": n}
@@ -71,16 +67,6 @@ class ProfileSerializer(serializers.ModelSerializer):
         #     #data.get['click_recomms']= [self_id]
         #     data.get['click_recomms'] = [self.id]
         return data
-
-
-# 회원가입
-# 회원가입 시 보낼 정보 -> id, pw, name, age, gender, phone_nm, nickname, introduction
-# class JoinSerializer(serializers.ModelSerializer):
-#     related_user = UserSerializer(read_only=True)
-#
-#     class Meta:
-#         model = Profile
-#         fields = ['related_user', 'nickname', 'introduction']
 
 
 # 글고 받아온 두 아이디 비교하고 추가하고 그걸 view에서 해주는거잖아 post겠네 인스턴스추가니까

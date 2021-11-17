@@ -20,6 +20,7 @@ from django.urls import path, include
 from django.conf.urls.static import static
 from rest_framework import routers
 
+from users import views
 from users.views import main
 
 
@@ -27,7 +28,10 @@ from users.views import main
 
 urlpatterns = [
     path('', main),
+    path('jobs/', views.JobList.as_view()),
     path('users/', include('users.urls')),
+    path('get_staff/', include('get_staff.urls')),
+
     path('api-auth', include('rest_framework.urls')),
     path('admin/', admin.site.urls),
     # path('get_staff', include('get_staff.urls')),
