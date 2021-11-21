@@ -47,7 +47,7 @@ class ProfileSerializer(serializers.ModelSerializer):
         # job_dic = {'job_name': j.job_name}
         profile = Profile.objects.create(**validated_data,
                                          related_user=related_user)  # Direct assignment to the forward side of a many-to-many set is prohibited. Use jobs.set() instead.
-        profile.jobs.add(Job.objects.get(pk=23))
+        profile.jobs.add(Job.objects.get(pk=1))
         # for job_data in jobs_data:
         #     job, is_job_created = Job.objects.get_or_create(jobs_data)
         #     if is_job_created:
@@ -57,7 +57,7 @@ class ProfileSerializer(serializers.ModelSerializer):
 
     def validate(self, data):  # data 는 APIView의 request.data  , jobs필드는 받지 않고 create하고 싶어서
         if data.get('jobs', None) is None:
-            j = Job.objects.get(pk=23)  # 없어도됨 view에 validate사용한거 수정 귀찮아서 냅둔거ㅓ..
+            j = Job.objects.get(pk=1)  # 없어도됨 view에 validate사용한거 수정 귀찮아서 냅둔거ㅓ..
         # aa = str(a)
         # data.get['jobs'] == a # 'builtin_function_or_method' object is not subscriptable
         # data.get['jobs'] += {"id":a, "job_name": n}
