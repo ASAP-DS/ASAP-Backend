@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from get_staff.models import GetStaffPost
+from get_staff.models import GetStaffPost, CommentGetStaff
 from users.models import Profile, Job
 from users.serializers import ProfileSerializer, JobSerializer
 
@@ -16,6 +16,14 @@ class GetStaffPostSerializer(serializers.ModelSerializer):
         self.fields['profile'] = ProfileSerializer(read_only=True)
         #self.fields['jobs'] = JobSerializer(read_only=True)
         return super(GetStaffPostSerializer, self).to_representation(instance)
+
+
+class CommentGetStaffSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CommentGetStaff
+        fields = "__all__"
+
+
 
 #
 # class GetStaffPostSerializer(serializers.ModelSerializer):
