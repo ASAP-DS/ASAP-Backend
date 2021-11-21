@@ -11,19 +11,30 @@ class GetStaffPostSerializer(serializers.ModelSerializer):
         fields = ['id', 'profile', 'title', 'jobs', 'hourly_pay', 'start_date', 'end_date',
                   'start_time', 'end_time', 'created_at', 'content']
 
-
     def to_representation(self, instance):
         self.fields['profile'] = ProfileSerializer(read_only=True)
-        #self.fields['jobs'] = JobSerializer(read_only=True)
+        # self.fields['jobs'] = JobSerializer(read_only=True)
         return super(GetStaffPostSerializer, self).to_representation(instance)
 
 
 class CommentGetStaffSerializer(serializers.ModelSerializer):
     class Meta:
         model = CommentGetStaff
+        # fields = ['id', 'post_id', 'profile_id', 'content', 'created_at', 'is_anon']
         fields = "__all__"
 
+    # post = models.ForeignKey(GetStaffPost, on_delete=models.CASCADE)
+    # profile = models.ForeignKey(Profile, null=False, on_delete=models.CASCADE)
+    # content = models.TextField(blank=True)
+    # created_at = models.DateTimeField(null=True, auto_now_add=True)
+    # is_anon = models.BooleanField()  # 익명이면 True
 
+
+class CommentPostSerializer(serializers.Serializer):
+    post_id = serializers.IntegerField(style={'input_type': 'post_id'})
+    profile_id = serializers.IntegerField(style={'input_type': 'profile_id'})
+    content = serializers.CharField(max_length=None, style={'input_type': 'profile_id'})
+    is_anon = serializers.BooleanField(style={'input_type': 'is_anon'})
 
 #
 # class GetStaffPostSerializer(serializers.ModelSerializer):
