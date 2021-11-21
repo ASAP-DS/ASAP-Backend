@@ -9,18 +9,23 @@ from rest_framework.decorators import api_view
 from rest_framework.views import APIView
 
 from get_staff.models import GetStaffPost, CommentGetStaff
-from get_staff.serializers import GetStaffPostSerializer, CommentGetStaffSerializer, CommentPostSerializer
+from get_staff.serializers import GetStaffPostSerializer, CommentGetStaffSerializer, CommentPostSerializer, \
+    SortPostSerializer
 from users.models import Profile
 
 
-# class GetStaffPostViewSet(viewsets.ModelViewSet):
-#     queryset = GetStaffPost.objects.all()
-#     serializer_class = GetStaffPostSerializer
-#
-#     def perform_create(self, serializer):
-#         serializer.save()
-#
 
+@api_view(['GET'])
+def sort_high_pay(request): # 시급 높은순으로
+    posts = GetStaffPost.objects.all().order_by('-hourly_pay')
+    serializer = SortPostSerializer(posts, many=True)
+    return Response(serializer.data)
+
+# @api_view(['GET'])
+# def sort_high_pay(request): # 시급 높은순으로
+#     posts = GetStaffPost.objects.all().order_by('-hourly_pay')
+#     serializer = GetStaffPostSerializer(posts, many=True)
+#     return Response(serializer.data)
 
 class GetStaffPostList(APIView):
     def get(self, request):

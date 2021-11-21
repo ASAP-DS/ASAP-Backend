@@ -5,6 +5,13 @@ from users.models import Profile, Job
 from users.serializers import ProfileSerializer, JobSerializer
 
 
+class SortPostSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = GetStaffPost
+        fields = ['id', 'profile', 'title', 'jobs', 'hourly_pay', 'start_date', 'end_date',
+                  'start_time', 'end_time', 'created_at', 'content']
+
+
 class GetStaffPostSerializer(serializers.ModelSerializer):
     class Meta:
         model = GetStaffPost

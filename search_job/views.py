@@ -9,20 +9,20 @@ from rest_framework.decorators import api_view
 from rest_framework.views import APIView
 
 from search_job.models import SearchJobPost, CommentSearchJob
-from search_job.serializers import SearchJobPostSerializer, CommentSearchJobSerializer, CommentPostSerializer
+from search_job.serializers import SearchJobPostSerializer, CommentSearchJobSerializer, CommentPostSerializer, \
+    SortPostSerializer
 from users.models import Profile
 
 
-# class GetStaffPostViewSet(viewsets.ModelViewSet):
-#     queryset = GetStaffPost.objects.all()
-#     serializer_class = GetStaffPostSerializer
-#
-#     def perform_create(self, serializer):
-#         serializer.save()
-#
 
 
+#(self.end_time.hour - self.start_time.hour) + (self.end_time.minute - self.start_time.minute / 60.0)
 
+@api_view(['GET'])
+def sort_early_start(request):
+    posts = SearchJobPost.objects.all().order_by('start_time')  # 근무 시간이 빠른(이른) 순
+    serializer = SortPostSerializer(posts, many=True)
+    return Response(serializer.data)
 
 
 class SearchJobPostList(APIView):
@@ -62,7 +62,7 @@ class SearchJobPostDetail(APIView):
 
 class CommentSearchJobList(APIView):
     def get(self, request, pk):
-        comments = CommentSearchJob.objects.filter(post = pk)
+        comments = CommentSearchJob.objects.filter(post=pk)
         serializer = CommentSearchJobSerializer(comments, many=True)
         return Response(serializer.data)
 
@@ -81,8 +81,6 @@ class CommentSearchJobDetail(APIView):
         comment = self.get_object(pk, pk2)
         serializer = CommentSearchJobSerializer(comment)
         return Response(serializer.data)
-
-
 
 
 @api_view(['POST', 'GET'])
@@ -110,5 +108,5 @@ def add_comment(request):
         else:
             return Response(serializer.errors, status=status.HTTP_406_NOT_ACCEPTABLE)
 
-    else: # 'get'
+    else:  # 'get'
         return Response(status=status.HTTP_200_OK)

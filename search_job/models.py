@@ -8,7 +8,7 @@ from django.db import models
 from django.utils import timezone
 from django.utils.datetime_safe import datetime, date
 from django.utils.timezone import now
-
+from datetime import datetime, date, time, timedelta
 from users.models import Profile, Job
 
 
@@ -31,6 +31,11 @@ class SearchJobPost(models.Model):
     def __str__(self):
         return f'{self.pk}: {self.title} - {self.profile.nickname}'
 
+    # def workHours(self):
+    #     hours = self.end_time.hour - self.start_time.hour
+    #     minutes = self.end_time.minute - self.start_time.minute
+    #     minutes_to_hours = minutes / 60.0
+    #     return hours + minutes_to_hours
 
 class CommentSearchJob(models.Model):
     post = models.ForeignKey(SearchJobPost, on_delete=models.CASCADE)

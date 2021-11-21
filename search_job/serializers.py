@@ -5,6 +5,22 @@ from users.models import Profile, Job
 from users.serializers import ProfileSerializer, JobSerializer
 
 
+class SortPostSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SearchJobPost
+        #workHours = model.workHours(model)
+        fields = ['id', 'profile', 'title', 'jobs',  'start_date', 'end_date',
+                  'start_time', 'end_time', 'created_at', 'content']
+
+    # def get_workHours(self, object):
+    #     end_time = object.end_time
+    #     start_time = object.start_time
+    #     hours = end_time.hour - start_time.hour
+    #     minutes = end_time.minute - start_time.minute
+    #     minutes_to_hours = minutes / 60.0
+    #     return hours + minutes_to_hours
+
+
 class SearchJobPostSerializer(serializers.ModelSerializer):
     class Meta:
         model = SearchJobPost
