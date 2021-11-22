@@ -1,4 +1,4 @@
-from django.contrib.auth.base_user import BaseUserManager
+from django.contrib.auth.base_user import BaseUserManager, AbstractBaseUser
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
@@ -52,7 +52,7 @@ class UserManager(BaseUserManager):
         return self.get(phone_nm=phone_nm)
 
 
-class User(AbstractUser):
+class User(AbstractBaseUser):
     GENDER_CHOICES = [
         (0, 'Female'),
         (1, 'Male'),
