@@ -12,7 +12,7 @@ urlpatterns = [
     path('login/', views.login), # 로그인
     path('job/', views.job), # 회원의 jobs수정
     path('recomms/',views.recomm),
-   path('profiles', views.ProfileList.as_view()),
+   path('profiles/', views.ProfileList.as_view()),
    path('profiles/<int:pk>', views.ProfileDetail.as_view()),
     path('alljobs/', views.JobList.as_view()),
   # path('join/',views),
