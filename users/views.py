@@ -44,8 +44,9 @@ class ProfileList(APIView):
     def post(self, request):
         data = request.data
         serializer = ProfileSerializer(data=data, partial=True)
+
         # jobs = serializer.data['jobs']  # list 형태?
-        # recomms = serializer.data['recomms'] # list형태?
+        # recomms = serializer.data['recomms'] # list형태?;
         if serializer.is_valid(raise_exception=ValueError):
             serializer.validate(data)
             serializer.create(validated_data=request.data)

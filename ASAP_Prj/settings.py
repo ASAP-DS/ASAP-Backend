@@ -157,6 +157,5 @@ ACCOUNT_USER_MODEL_USERNAME_FIELD = None
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-APPEND_SLASH = False
-
+APPEND_SLASH = False  # 디폴트는 True
 
