@@ -45,9 +45,18 @@ class ProfileList(APIView):
         data = request.data
         serializer = ProfileSerializer(data=data, partial=True)
 
-        # jobs = serializer.data['jobs']  # list 형태?
-        # recomms = serializer.data['recomms'] # list형태?;
+        # 검사를 안한 상태로 create하려해서 그냥 서버 내부오류(500)?
+        # 안드로이드에서 이미 phone_nm이 있음녀~ id가 있으면 이런거 안했음 (API불러오는거 너무 오래걸려)
+        # 서버에서 해줘야함.. 일다 ㄴ해보자
         if serializer.is_valid(raise_exception=ValueError):
+
+            # login_ID = serializer.data['related_user.login_ID']
+            #phone_nm = serializer.data['related_user["phone_nm"]']
+            # user = serializer.data['related_user']
+            # phone_nm = user.phone_nm
+            # if phone_nm in User.objects.all().values_list('phone_nm', flat=True):
+            #     return HttpResponse(status=409)  # CONFLICT
+
             serializer.validate(data)
             serializer.create(validated_data=request.data)
             return Response(serializer.data, status.HTTP_201_CREATED)
